@@ -1,0 +1,23 @@
+﻿<Application
+    x:Class="iPhoneRingsMaker.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="using:iPhoneRingsMaker.Converters">
+    <Application.Resources>
+        <ResourceDictionary>
+            <StandardUICommand x:Key="OpenCommand" Kind="Open" />
+            <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <XamlUICommand x:Key="OpenIPhoneMusicCommand" x:Uid="Command_OpenIPhoneMusic">
+                <XamlUICommand.IconSource>
+                    <FontIconSource Glyph="&#xE8EA;" />
+                </XamlUICommand.IconSource>
+            </XamlUICommand>
+            <ResourceDictionary.MergedDictionaries>
+                <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
+                <ResourceDictionary Source="/Styles/FontSizes.xaml" />
+                <ResourceDictionary Source="/Styles/Thickness.xaml" />
+                <ResourceDictionary Source="/Styles/TextBlock.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

@@ -1,0 +1,10 @@
+﻿{
+    "profiles": {
+      "iPhoneRingsMaker (Package)": {
+        "commandName": "MsixPackage"
+      },
+      "iPhoneRingsMaker (Unpackaged)": {
+        "commandName": "Project"
+      }
+    }
+}

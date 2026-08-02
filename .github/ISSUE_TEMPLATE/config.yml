@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Usage questions
+    url: https://github.com/mveril/iPhoneRingsMaker/discussions
+    about: Ask for help in GitHub Discussions.
+  - name: Security vulnerability
+    url: https://github.com/mveril/iPhoneRingsMaker/security/advisories/new
+    about: Report vulnerabilities privately.

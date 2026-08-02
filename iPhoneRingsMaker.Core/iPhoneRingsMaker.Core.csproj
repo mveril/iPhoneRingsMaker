@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>iPhoneRingsMaker.Core</RootNamespace>
+    <Platforms>x86;x64;arm64;AnyCPU</Platforms>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <Authors>Mickaël Véril</Authors>
+    <Copyright>Copyright © 2026 Mickaël Véril</Copyright>
+    <Description>Core models and services for iPhoneRingsMaker.</Description>
+    <RepositoryUrl>https://github.com/mveril/iPhoneRingsMaker</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>annotations</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Diagnostics" Version="8.4.2" />
+    <PackageReference Include="Generator.Equals" Version="4.0.2" />
+    <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="10.0.10" />
+    <PackageReference Include="Netimobiledevice" Version="2.5.2" />
+    <PackageReference Include="SQLitePCLRaw.provider.winsqlite3" Version="3.0.5" />
+  </ItemGroup>
+</Project>
