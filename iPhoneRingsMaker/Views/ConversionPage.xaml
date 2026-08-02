@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="iPhoneRingsMaker.Views.ConversionPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="using:iPhoneRingsMaker.Converters">
+    <Page.Resources>
+        <XamlUICommand x:Key="ConvertCommand" x:Uid="Command_Convert" Command="{x:Bind ViewModel.ConvertCommand}" />
+        <XamlUICommand x:Key="SelectOutputFileCommand" x:Uid="Command_select_output_file" Command="{x:Bind ViewModel.SelectSaveFileCommand}" />
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </Page.Resources>
+
+    <ScrollViewer>
+        <Grid MaxWidth="1000" Padding="24" RowSpacing="16">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <TextBlock
+                x:Uid="Conversion_Title"
+                AutomationProperties.AutomationId="ConversionPageTitle"
+                Style="{StaticResource PageTitleStyle}" />
+
+            <StackPanel
+                Grid.Row="1"
+                HorizontalAlignment="Center"
+                Spacing="12"
+                Visibility="{x:Bind ViewModel.HasNoSource, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <FontIcon HorizontalAlignment="Center" FontSize="48" Glyph="&#xE768;" />
+                <TextBlock x:Uid="Conversion_EmptyTitle" HorizontalAlignment="Center" Style="{ThemeResource SubtitleTextBlockStyle}" />
+                <TextBlock
+                    x:Uid="Conversion_EmptyDescription"
+                    MaxWidth="520"
+                    HorizontalAlignment="Center"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    TextAlignment="Center"
+                    TextWrapping="Wrap" />
+                <Button
+                    x:Uid="Conversion_BackToEdition"
+                    HorizontalAlignment="Center"
+                    AutomationProperties.AutomationId="BackToEditionButton"
+                    Command="{x:Bind ViewModel.NavigateToEditionCommand}"
+                    Style="{StaticResource AccentButtonStyle}" />
+            </StackPanel>
+
+            <Border
+                Grid.Row="1"
+                Padding="20"
+                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                BorderThickness="1"
+                CornerRadius="{ThemeResource ControlCornerRadius}"
+                Visibility="{x:Bind ViewModel.HasSource, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <StackPanel Spacing="16">
+                    <InfoBar
+                        AutomationProperties.AutomationId="ConversionErrorInfoBar"
+                        IsClosable="True"
+                        IsOpen="{x:Bind ViewModel.HasError, Mode=OneWay}"
+                        Message="{x:Bind ViewModel.ErrorMessage, Mode=OneWay}"
+                        Severity="Error" />
+                    <InfoBar
+                        x:Uid="Conversion_Success"
+                        AutomationProperties.AutomationId="ConversionSuccessInfoBar"
+                        AutomationProperties.LiveSetting="Polite"
+                        IsClosable="True"
+                        IsOpen="{x:Bind ViewModel.HasSuccess, Mode=OneWay}"
+                        Message="{x:Bind ViewModel.SuccessMessage, Mode=OneWay}"
+                        Severity="Success" />
+                    <MediaPlayerElement
+                        AutomationProperties.AutomationId="ConversionMediaPlayer"
+                        AreTransportControlsEnabled="True"
+                        Source="{x:Bind ViewModel.Source, Mode=OneWay}" />
+                    <ProgressBar
+                        AutomationProperties.AutomationId="ConversionProgress"
+                        Maximum="100"
+                        Minimum="0"
+                        Value="{x:Bind ViewModel.TranscodeProgress, Mode=OneWay}"
+                        Visibility="{x:Bind ViewModel.IsTranscodingStarted, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                    <TextBlock
+                        AutomationProperties.LiveSetting="Polite"
+                        Text="{x:Bind ViewModel.ProgressDescription, Mode=OneWay}"
+                        Visibility="{x:Bind ViewModel.IsTranscoding, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                    <TextBlock x:Name="OutputLabel" x:Uid="Conversion_OutputLabel" Style="{ThemeResource BodyStrongTextBlockStyle}" />
+                    <Grid ColumnSpacing="12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox
+                            AutomationProperties.AutomationId="OutputPath"
+                            AutomationProperties.LabeledBy="{x:Bind OutputLabel}"
+                            IsReadOnly="True"
+                            Text="{x:Bind ViewModel.OutputPath, Mode=OneWay}" />
+                        <Button
+                            Grid.Column="1"
+                            AutomationProperties.AutomationId="SelectOutputButton"
+                            Command="{StaticResource SelectOutputFileCommand}" />
+                    </Grid>
+                    <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Spacing="8">
+                        <Button
+                            x:Uid="Conversion_OpenFolder"
+                            AutomationProperties.AutomationId="OpenOutputFolderButton"
+                            Command="{x:Bind ViewModel.OpenOutputFolderCommand}"
+                            Visibility="{x:Bind ViewModel.HasConvertedOutput, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        <Button
+                            x:Name="TransferToIPhoneButton"
+                            x:Uid="Conversion_Transfer"
+                            AutomationProperties.AutomationId="TransferToIPhoneButton"
+                            Click="OnTransferToIPhoneClick"
+                            IsEnabled="{x:Bind ViewModel.CanPrepareTransfer, Mode=OneWay}" />
+                        <TeachingTip
+                            x:Uid="Conversion_TransferTip"
+                            IsLightDismissEnabled="True"
+                            IsOpen="{x:Bind ViewModel.HasSuccess, Mode=OneWay}"
+                            PreferredPlacement="Top"
+                            Target="{x:Bind TransferToIPhoneButton}">
+                            <TeachingTip.IconSource>
+                                <SymbolIconSource Symbol="Send" />
+                            </TeachingTip.IconSource>
+                        </TeachingTip>
+                        <Button
+                            x:Uid="Conversion_Cancel"
+                            AutomationProperties.AutomationId="CancelConversionButton"
+                            Command="{x:Bind ViewModel.ConvertCancelCommand}" />
+                        <Button
+                            HorizontalAlignment="Right"
+                            AutomationProperties.AutomationId="ConvertButton"
+                            Command="{StaticResource ConvertCommand}"
+                            Style="{StaticResource AccentButtonStyle}" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </ScrollViewer>
+</Page>

@@ -1,0 +1,292 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AppDisplayName" xml:space="preserve">
+    <value>iPhoneRingsMaker</value>
+  </data>
+  <data name="AppDescription" xml:space="preserve">
+    <value>Créez des sonneries M4R et transférez-les vers un iPhone, un iPad ou un iPod compatible.</value>
+  </data>
+  <data name="ShellMenuBarItem_File.Title" xml:space="preserve">
+    <value>Fichier</value>
+  </data>
+  <data name="ShellMenuBarItem_Views.Title" xml:space="preserve">
+    <value>Vue</value>
+  </data>
+  <data name="Edition_Title.Text" xml:space="preserve">
+    <value>Édition</value>
+    <comment>Page title for EditionPage</comment>
+  </data>
+  <data name="Settings_Personalization.Text" xml:space="preserve">
+    <value>Personalisation</value>
+  </data>
+  <data name="Settings_Theme.Text" xml:space="preserve">
+    <value>Thème</value>
+  </data>
+  <data name="Settings_Theme_Light.Content" xml:space="preserve">
+    <value>Clair</value>
+  </data>
+  <data name="Settings_Theme_Dark.Content" xml:space="preserve">
+    <value>Sombre</value>
+  </data>
+  <data name="Settings_Theme_Default.Content" xml:space="preserve">
+    <value>Thème du système</value>
+  </data>
+  <data name="Settings_About.Text" xml:space="preserve">
+    <value>À propos de cette application</value>
+  </data>
+  <data name="Settings_AboutDescription.Text" xml:space="preserve">
+    <value>Créez des sonneries M4R et transférez-les vers un iPhone, un iPad ou un iPod compatible.</value>
+  </data>
+  <data name="SettingsPage_PrivacyTermsLink.Content" xml:space="preserve">
+    <value>Politique de confidentialité</value>
+  </data>
+  <data name="SettingsPage_PrivacyTermsLink.NavigateUri" xml:space="preserve">
+    <value>https://github.com/mveril/iPhoneRingsMaker/blob/main/PRIVACY.md</value>
+  </data>
+  <data name="ShellMenuBarSettingsButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve">
+    <value>Réglages</value>
+  </data>
+  <data name="Settings_Title.Text" xml:space="preserve">
+    <value>Réglages</value>
+    <comment>Page title for SettingsPage</comment>
+  </data>
+  <data name="ShellMenuItem_Views_Edition.Text" xml:space="preserve">
+    <value>Édition</value>
+  </data>
+  <data name="Command_SaveAs.Label" xml:space="preserve">
+    <value>Enregistrer sous</value>
+  </data>
+  <data name="Conversion_Title.Text" xml:space="preserve">
+    <value>Conversion</value>
+  </data>
+  <data name="Command_Convert.Label" xml:space="preserve">
+    <value>Convertir</value>
+  </data>
+  <data name="Command_select_output_file.Label" xml:space="preserve">
+    <value>Sélectionner le fichier de sortie</value>
+  </data>
+  <data name="ShellMenuItem_Views_Convert.Text" xml:space="preserve">
+    <value>Conversion</value>
+  </data>
+  <data name="Navigation_Edition.Content" xml:space="preserve">
+    <value>Édition</value>
+  </data>
+  <data name="Navigation_Conversion.Content" xml:space="preserve">
+    <value>Conversion</value>
+  </data>
+  <data name="Selector_Edition.Text" xml:space="preserve">
+    <value>1. Découper</value>
+  </data>
+  <data name="Selector_Conversion.Text" xml:space="preserve">
+    <value>2. Exporter</value>
+  </data>
+  <data name="Conversion_OutputLabel.Text" xml:space="preserve">
+    <value>Fichier de sortie</value>
+  </data>
+  <data name="Conversion_Transfer.Content" xml:space="preserve">
+    <value>Envoyer vers l’iPhone</value>
+  </data>
+  <data name="Conversion_Cancel.Content" xml:space="preserve">
+    <value>Annuler</value>
+  </data>
+  <data name="DevicePicker.Title" xml:space="preserve">
+    <value>Sélectionner un iPhone</value>
+  </data>
+  <data name="DevicePicker.PrimaryButtonText" xml:space="preserve">
+    <value>Envoyer la sonnerie</value>
+  </data>
+  <data name="DevicePicker.CloseButtonText" xml:space="preserve">
+    <value>Fermer</value>
+  </data>
+  <data name="Edition_EmptyTitle.Text" xml:space="preserve"><value>Créez votre sonnerie</value></data>
+  <data name="Edition_EmptyDescription.Text" xml:space="preserve"><value>Choisissez un fichier audio ou déposez-le dans cette fenêtre pour sélectionner un extrait de 40 secondes maximum.</value></data>
+  <data name="Command_OpenMedia.Label" xml:space="preserve"><value>Choisir un fichier audio</value></data>
+  <data name="Edition_DropHint.Text" xml:space="preserve"><value>Vous pouvez déposer un autre fichier audio directement sur le lecteur.</value></data>
+  <data name="Edition_StartLabel.Text" xml:space="preserve"><value>Début</value></data>
+  <data name="Edition_EndLabel.Text" xml:space="preserve"><value>Fin</value></data>
+  <data name="Edition_DurationLabel.Text" xml:space="preserve"><value>Durée :</value></data>
+  <data name="Edition_TrimSelector.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Plage de la sonnerie</value></data>
+  <data name="Edition_DurationLimit.Message" xml:space="preserve"><value>Une sonnerie peut durer jusqu’à 40 secondes.</value></data>
+  <data name="Edition_Continue.Content" xml:space="preserve"><value>Continuer vers l’export</value></data>
+  <data name="Edition_LoadError" xml:space="preserve"><value>Impossible de charger ce média : {0}</value></data>
+  <data name="Conversion_EmptyTitle.Text" xml:space="preserve"><value>Aucun extrait à exporter</value></data>
+  <data name="Conversion_EmptyDescription.Text" xml:space="preserve"><value>Choisissez et découpez d’abord un fichier audio, puis revenez ici pour créer la sonnerie.</value></data>
+  <data name="Conversion_BackToEdition.Content" xml:space="preserve"><value>Retourner au découpage</value></data>
+  <data name="Conversion_Success.Title" xml:space="preserve"><value>Sonnerie créée</value></data>
+  <data name="Conversion_SuccessMessage" xml:space="preserve"><value>Le fichier M4R est prêt. Vous pouvez maintenant l’envoyer vers votre iPhone.</value></data>
+  <data name="Conversion_CancelledMessage" xml:space="preserve"><value>La conversion a été annulée.</value></data>
+  <data name="Conversion_InvalidSelectionMessage" xml:space="preserve"><value>Sélectionnez un extrait valide avant de l’envoyer.</value></data>
+  <data name="Conversion_ProgressFormat" xml:space="preserve"><value>Conversion en cours — {0} %</value></data>
+  <data name="Conversion_OpenFolder.Content" xml:space="preserve"><value>Ouvrir le dossier</value></data>
+  <data name="DevicePicker_Loading.Text" xml:space="preserve"><value>Recherche des appareils…</value></data>
+  <data name="DevicePicker_NoDevice" xml:space="preserve"><value>Aucun iPhone détecté. Connectez et déverrouillez l’appareil, puis réessayez.</value></data>
+  <data name="DevicePicker_Pairing" xml:space="preserve"><value>Association avec l’iPhone en cours…</value></data>
+  <data name="DevicePicker_TransferProgress" xml:space="preserve"><value>Envoi de la sonnerie : {0:0} %</value></data>
+  <data name="UnsavedChanges_Title" xml:space="preserve"><value>Enregistrer les modifications ?</value></data>
+  <data name="UnsavedChanges_Message" xml:space="preserve"><value>Le projet contient des modifications qui n’ont pas encore été enregistrées.</value></data>
+  <data name="UnsavedChanges_Save" xml:space="preserve"><value>Enregistrer</value></data>
+  <data name="UnsavedChanges_Discard" xml:space="preserve"><value>Ne pas enregistrer</value></data>
+  <data name="UnsavedChanges_Cancel" xml:space="preserve"><value>Annuler</value></data>
+  <data name="Edition_OpenIPhoneMusic.Content" xml:space="preserve"><value>Choisir sur l’iPhone</value></data>
+  <data name="Command_OpenIPhoneMusic.Label" xml:space="preserve"><value>Choisir sur l’iPhone</value></data>
+  <data name="Shell_OpenMedia.Content" xml:space="preserve"><value>Ouvrir</value></data>
+  <data name="MusicLibraryPicker.Title" xml:space="preserve"><value>Musique de l’iPhone</value></data>
+  <data name="MusicLibraryPicker.PrimaryButtonText" xml:space="preserve"><value>Utiliser ce morceau</value></data>
+  <data name="MusicLibraryPicker.CloseButtonText" xml:space="preserve"><value>Annuler</value></data>
+  <data name="MusicLibrary_Device.Header" xml:space="preserve"><value>Appareil</value></data>
+  <data name="MusicLibrary_Search.PlaceholderText" xml:space="preserve"><value>Rechercher par titre, artiste ou album</value></data>
+  <data name="MusicLibrary_Loading.Text" xml:space="preserve"><value>Lecture de la bibliothèque musicale…</value></data>
+  <data name="MusicLibrary_NoDevice" xml:space="preserve"><value>Connectez et déverrouillez un iPhone pour parcourir sa musique.</value></data>
+  <data name="MusicLibrary_Empty" xml:space="preserve"><value>Aucun morceau n’est présent dans la bibliothèque locale de cet appareil.</value></data>
+  <data name="MusicLibrary_UnknownArtist" xml:space="preserve"><value>Artiste inconnu</value></data>
+  <data name="MusicLibrary_CloudOnly" xml:space="preserve"><value>Disponible uniquement dans le cloud</value></data>
+  <data name="MusicLibrary_Protected" xml:space="preserve"><value>Morceau protégé par Apple Music</value></data>
+  <data name="MusicLibrary_Missing" xml:space="preserve"><value>Fichier absent de l’appareil</value></data>
+  <data name="MusicLibrary_Unsupported" xml:space="preserve"><value>Format non pris en charge</value></data>
+  <data name="DevicePicker_ConnectionHelp.Title" xml:space="preserve"><value>iPhone introuvable</value></data>
+  <data name="DevicePicker_ConnectionHelp.Message" xml:space="preserve"><value>Branchez l’iPhone en USB, déverrouillez-le, puis touchez « Faire confiance » si la question apparaît.</value></data>
+  <data name="DevicePicker_AppleHelp.Content" xml:space="preserve"><value>Aide Apple</value></data>
+  <data name="DevicePicker_ConnectionTip.Title" xml:space="preserve"><value>Connecter votre iPhone</value></data>
+  <data name="DevicePicker_ConnectionTip.Subtitle" xml:space="preserve"><value>Utilisez un câble USB compatible avec les données, gardez l’iPhone déverrouillé et acceptez la relation de confiance.</value></data>
+  <data name="MusicLibrary_ConnectionHelp.Title" xml:space="preserve"><value>Aucun iPhone détecté</value></data>
+  <data name="MusicLibrary_ConnectionHelp.Message" xml:space="preserve"><value>Connectez et déverrouillez l’iPhone pour parcourir sa bibliothèque locale.</value></data>
+  <data name="Edition_TrimTip.Title" xml:space="preserve"><value>Choisissez le meilleur extrait</value></data>
+  <data name="Edition_TrimTip.Subtitle" xml:space="preserve"><value>Faites glisser les deux poignées pour définir une sonnerie de 40 secondes maximum.</value></data>
+  <data name="Conversion_TransferTip.Title" xml:space="preserve"><value>Votre sonnerie est prête</value></data>
+  <data name="Conversion_TransferTip.Subtitle" xml:space="preserve"><value>Vous pouvez maintenant l’envoyer directement vers votre iPhone.</value></data>
+  <data name="Edition_ContextShowInExplorer.Text" xml:space="preserve"><value>Afficher le fichier audio dans l’Explorateur</value></data>
+  <data name="Edition_ContextCopyArtwork.Text" xml:space="preserve"><value>Copier la pochette</value></data>
+  <data name="WifiAccess_Title.Text" xml:space="preserve"><value>Connexion Wi-Fi</value></data>
+  <data name="WifiAccess_Subtitle.Text" xml:space="preserve"><value>Utiliser l’iPhone sans câble USB</value></data>
+  <data name="WifiAccess_Toggle.Header" xml:space="preserve"><value>Autoriser l’accès à cet iPhone en Wi-Fi</value></data>
+  <data name="WifiAccess_Toggle.OnContent" xml:space="preserve"><value>Activé</value></data>
+  <data name="WifiAccess_Toggle.OffContent" xml:space="preserve"><value>Désactivé</value></data>
+  <data name="WifiAccess_SelectDevice" xml:space="preserve"><value>Sélectionnez un iPhone pour consulter son réglage Wi-Fi.</value></data>
+  <data name="WifiAccess_Description" xml:space="preserve"><value>Autorise cet ordinateur à retrouver l’iPhone lorsqu’ils utilisent le même réseau Wi-Fi.</value></data>
+  <data name="WifiAccess_TrustRequired" xml:space="preserve"><value>Déverrouillez l’iPhone et approuvez cet ordinateur avant de modifier ce réglage.</value></data>
+  <data name="WifiAccess_UsbRequired" xml:space="preserve"><value>Connectez cet iPhone en USB pour modifier son accès Wi-Fi.</value></data>
+  <data name="WifiAccess_Enabled" xml:space="preserve"><value>L’accès à l’iPhone en Wi-Fi est activé.</value></data>
+  <data name="WifiAccess_Disabled" xml:space="preserve"><value>L’accès à l’iPhone en Wi-Fi est désactivé.</value></data>
+  <data name="WifiAccess_Error" xml:space="preserve"><value>Impossible de modifier l’accès Wi-Fi : {0}</value></data>
+  <data name="WifiAccess_StateChecking" xml:space="preserve"><value>Vérification…</value></data>
+  <data name="WifiAccess_StateUnavailable" xml:space="preserve"><value>Indisponible</value></data>
+  <data name="WifiAccess_StateOn" xml:space="preserve"><value>Activé</value></data>
+  <data name="WifiAccess_StateOff" xml:space="preserve"><value>Désactivé</value></data>
+</root>

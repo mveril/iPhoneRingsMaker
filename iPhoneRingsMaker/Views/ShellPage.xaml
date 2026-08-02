@@ -1,0 +1,105 @@
+<Page
+    x:Class="iPhoneRingsMaker.Views.ShellPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Loaded="OnLoaded"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <StandardUICommand x:Key="SaveCommand" Command="{x:Bind ViewModel.MenuFileSaveCommand}" Kind="Save" />
+        <StandardUICommand x:Key="CloseCommand" Command="{x:Bind ViewModel.MenuFileExitCommand}" Kind="Close" />
+        <XamlUICommand x:Key="SaveAsCommand" x:Uid="Command_SaveAs" Command="{x:Bind ViewModel.MenuFileSaveAsCommand}">
+            <XamlUICommand.IconSource>
+                <SymbolIconSource Symbol="Save" />
+            </XamlUICommand.IconSource>
+        </XamlUICommand>
+    </Page.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="48" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <TitleBar
+            x:Name="AppTitleBar"
+            AutomationProperties.AutomationId="AppTitleBar"
+            Height="48">
+            <TitleBar.Resources>
+                <HorizontalAlignment x:Key="TitleBarContentHorizontalAlignment">Left</HorizontalAlignment>
+            </TitleBar.Resources>
+            <TitleBar.IconSource>
+                <ImageIconSource ImageSource="/Assets/WindowIcon.ico" />
+            </TitleBar.IconSource>
+            <TitleBar.Content>
+                <SelectorBar
+                    x:Name="MainSelector"
+                    AutomationProperties.AutomationId="MainSelector"
+                    SelectionChanged="MainSelector_SelectionChanged">
+                    <SelectorBarItem
+                        x:Name="EditionSelectorItem"
+                        x:Uid="Selector_Edition"
+                        AutomationProperties.AutomationId="EditionNavigationItem"
+                        Icon="Edit"
+                        Tag="edition" />
+                    <SelectorBarItem
+                        x:Uid="Selector_Conversion"
+                        AutomationProperties.AutomationId="ConversionNavigationItem"
+                        Icon="Play"
+                        Tag="conversion" />
+                </SelectorBar>
+            </TitleBar.Content>
+            <TitleBar.RightHeader>
+                <Button
+                    x:Name="SettingsButton"
+                    x:Uid="ShellMenuBarSettingsButton"
+                    AutomationProperties.AutomationId="SettingsButton"
+                    Click="SettingsButton_Click">
+                    <FontIcon Glyph="&#xE713;" />
+                </Button>
+            </TitleBar.RightHeader>
+        </TitleBar>
+
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <CommandBar
+                AutomationProperties.AutomationId="ProjectCommandBar"
+                DefaultLabelPosition="Right">
+                <AppBarElementContainer>
+                    <SplitButton
+                        AutomationProperties.AutomationId="OpenFileButton"
+                        Command="{StaticResource OpenCommand}"
+                        IsEnabled="{x:Bind ViewModel.CanOpenMedia, Mode=OneWay}">
+                        <SplitButton.Content>
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <SymbolIcon Symbol="OpenFile" />
+                                <TextBlock Text="{Binding Label, Source={StaticResource OpenCommand}}" />
+                            </StackPanel>
+                        </SplitButton.Content>
+                        <SplitButton.Flyout>
+                            <MenuFlyout>
+                                <MenuFlyoutItem
+                                    AutomationProperties.AutomationId="OpenIPhoneMusicCommandButton"
+                                    Command="{StaticResource OpenIPhoneMusicCommand}" />
+                            </MenuFlyout>
+                        </SplitButton.Flyout>
+                    </SplitButton>
+                </AppBarElementContainer>
+                <AppBarButton AutomationProperties.AutomationId="SaveFileButton" Command="{StaticResource SaveCommand}" />
+                <AppBarButton AutomationProperties.AutomationId="SaveAsFileButton" Command="{StaticResource SaveAsCommand}">
+                    <AppBarButton.KeyboardAccelerators>
+                        <KeyboardAccelerator Key="S" Modifiers="Control,Shift" />
+                    </AppBarButton.KeyboardAccelerators>
+                </AppBarButton>
+                <CommandBar.SecondaryCommands>
+                    <AppBarSeparator />
+                    <AppBarButton AutomationProperties.AutomationId="CloseAppButton" Command="{StaticResource CloseCommand}" />
+                </CommandBar.SecondaryCommands>
+            </CommandBar>
+            <Frame x:Name="NavigationFrame" Grid.Row="1" />
+        </Grid>
+    </Grid>
+</Page>

@@ -1,0 +1,246 @@
+<Page
+    x:Class="iPhoneRingsMaker.Views.EditionPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:localconverters="using:iPhoneRingsMaker.Converters"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkit="using:CommunityToolkit.WinUI.UI.Controls"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <localconverters:TimeSpanToMillisecondsConverter x:Key="TimeSpanToMillisecondsConverter" />
+        <localconverters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </Page.Resources>
+
+    <ScrollViewer>
+        <Grid
+            x:Name="ResponsiveLayout"
+            MaxWidth="1200"
+            Padding="24"
+            AllowDrop="True"
+            DragEnter="MediaPlayerElement_DragEnter"
+            Drop="MediaPlayerElement_Drop"
+            RowSpacing="16">
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup>
+                    <VisualState x:Name="Narrow">
+                        <VisualState.StateTriggers>
+                            <AdaptiveTrigger MinWindowWidth="0" />
+                        </VisualState.StateTriggers>
+                        <VisualState.Setters>
+                            <Setter Target="EditorColumn.Width" Value="*" />
+                            <Setter Target="PreviewColumn.Width" Value="0" />
+                            <Setter Target="PreviewPanel.(Grid.Row)" Value="1" />
+                            <Setter Target="PreviewPanel.(Grid.Column)" Value="0" />
+                            <Setter Target="PreviewPanel.Margin" Value="0,16,0,0" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Wide">
+                        <VisualState.StateTriggers>
+                            <AdaptiveTrigger MinWindowWidth="850" />
+                        </VisualState.StateTriggers>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <TextBlock
+                x:Uid="Edition_Title"
+                AutomationProperties.AutomationId="EditionPageTitle"
+                Style="{StaticResource PageTitleStyle}" />
+
+            <StackPanel
+                Grid.Row="1"
+                HorizontalAlignment="Center"
+                Spacing="12"
+                Visibility="{x:Bind ViewModel.ShowEmptyState, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <FontIcon
+                    HorizontalAlignment="Center"
+                    FontSize="48"
+                    Glyph="&#xE8B7;" />
+                <TextBlock
+                    x:Uid="Edition_EmptyTitle"
+                    HorizontalAlignment="Center"
+                    Style="{ThemeResource SubtitleTextBlockStyle}" />
+                <TextBlock
+                    x:Uid="Edition_EmptyDescription"
+                    MaxWidth="520"
+                    HorizontalAlignment="Center"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    TextAlignment="Center"
+                    TextWrapping="Wrap" />
+                <SplitButton
+                    HorizontalAlignment="Center"
+                    AutomationProperties.AutomationId="OpenMediaEmptyStateButton"
+                    Command="{StaticResource OpenCommand}">
+                    <SplitButton.Content>
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <SymbolIcon Symbol="OpenFile" />
+                            <TextBlock Text="{Binding Label, Source={StaticResource OpenCommand}}" />
+                        </StackPanel>
+                    </SplitButton.Content>
+                    <SplitButton.Flyout>
+                        <MenuFlyout>
+                            <MenuFlyoutItem
+                                AutomationProperties.AutomationId="OpenIPhoneMusicEmptyStateButton"
+                                Command="{StaticResource OpenIPhoneMusicCommand}" />
+                        </MenuFlyout>
+                    </SplitButton.Flyout>
+                </SplitButton>
+            </StackPanel>
+
+            <Grid
+                x:Name="EditorGrid"
+                Grid.Row="1"
+                ColumnSpacing="20"
+                RowSpacing="16"
+                Visibility="{x:Bind ViewModel.HasMedia, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition x:Name="EditorColumn" Width="2*" />
+                    <ColumnDefinition x:Name="PreviewColumn" Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Border
+                    Padding="20"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    CornerRadius="{ThemeResource ControlCornerRadius}">
+                    <StackPanel Spacing="16">
+                        <MediaPlayerElement
+                            x:Name="MediaElement"
+                            AutomationProperties.AutomationId="EditionMediaPlayer"
+                            AllowDrop="True"
+                            AreTransportControlsEnabled="True" />
+                        <TextBlock
+                            x:Uid="Edition_DropHint"
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                            TextWrapping="Wrap" />
+                        <Grid ColumnSpacing="12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock x:Uid="Edition_StartLabel" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                                <TextBlock Text="{x:Bind ViewModel.StartTimeDisplay, Mode=OneWay}" />
+                            </StackPanel>
+                            <toolkit:RangeSelector
+                                x:Name="TrimRangeSelector"
+                                x:Uid="Edition_TrimSelector"
+                                Grid.Column="1"
+                                AutomationProperties.AutomationId="TrimRangeSelector"
+                                Maximum="{x:Bind ViewModel.MaximumDuration, Mode=OneWay, Converter={StaticResource TimeSpanToMillisecondsConverter}}"
+                                Minimum="0"
+                                RangeEnd="{x:Bind ViewModel.EndTime, Mode=TwoWay, Converter={StaticResource TimeSpanToMillisecondsConverter}}"
+                                RangeStart="{x:Bind ViewModel.StartTime, Mode=TwoWay, Converter={StaticResource TimeSpanToMillisecondsConverter}}" />
+                            <TeachingTip
+                                x:Name="TrimTeachingTip"
+                                x:Uid="Edition_TrimTip"
+                                IsLightDismissEnabled="True"
+                                PreferredPlacement="Top"
+                                Target="{x:Bind TrimRangeSelector}">
+                                <TeachingTip.IconSource>
+                                    <SymbolIconSource Symbol="Edit" />
+                                </TeachingTip.IconSource>
+                            </TeachingTip>
+                            <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                                <TextBlock x:Uid="Edition_EndLabel" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                                <TextBlock Text="{x:Bind ViewModel.EndTimeDisplay, Mode=OneWay}" />
+                            </StackPanel>
+                        </Grid>
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <TextBlock x:Uid="Edition_DurationLabel" Style="{ThemeResource BodyStrongTextBlockStyle}" />
+                            <TextBlock Text="{x:Bind ViewModel.DurationDisplay, Mode=OneWay}" />
+                        </StackPanel>
+                        <InfoBar
+                            x:Uid="Edition_DurationLimit"
+                            IsClosable="False"
+                            IsOpen="True"
+                            Severity="Informational" />
+                        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Spacing="8">
+                            <SplitButton
+                                AutomationProperties.AutomationId="ChangeMediaButton"
+                                Command="{StaticResource OpenCommand}">
+                                <SplitButton.Content>
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <SymbolIcon Symbol="OpenFile" />
+                                        <TextBlock Text="{Binding Label, Source={StaticResource OpenCommand}}" />
+                                    </StackPanel>
+                                </SplitButton.Content>
+                                <SplitButton.Flyout>
+                                    <MenuFlyout>
+                                        <MenuFlyoutItem
+                                            AutomationProperties.AutomationId="ChangeToIPhoneMusicButton"
+                                            Command="{StaticResource OpenIPhoneMusicCommand}" />
+                                    </MenuFlyout>
+                                </SplitButton.Flyout>
+                            </SplitButton>
+                            <Button
+                                x:Uid="Edition_Continue"
+                                AutomationProperties.AutomationId="ContinueToExportButton"
+                                Command="{x:Bind ViewModel.ContinueToConversionCommand}"
+                                Style="{StaticResource AccentButtonStyle}" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <Border
+                    x:Name="PreviewPanel"
+                    Grid.Column="1"
+                    Padding="20"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    CornerRadius="{ThemeResource ControlCornerRadius}">
+                    <StackPanel HorizontalAlignment="Center" Spacing="8">
+                        <Image
+                            Width="240"
+                            Height="240"
+                            AutomationProperties.AutomationId="ArtworkPreview"
+                            Source="{x:Bind ViewModel.Artwork, Mode=OneWay}"
+                            Stretch="UniformToFill">
+                            <Image.ContextFlyout>
+                                <MenuFlyout>
+                                    <MenuFlyoutItem
+                                        x:Uid="Edition_ContextShowInExplorer"
+                                        Command="{x:Bind ViewModel.ShowMediaInExplorerCommand}"
+                                        Icon="Folder" />
+                                    <MenuFlyoutItem
+                                        x:Uid="Edition_ContextCopyArtwork"
+                                        Command="{x:Bind ViewModel.CopyArtworkCommand}"
+                                        Icon="Copy" />
+                                </MenuFlyout>
+                            </Image.ContextFlyout>
+                        </Image>
+                        <TextBlock HorizontalAlignment="Center" Style="{ThemeResource SubtitleTextBlockStyle}" Text="{x:Bind ViewModel.Title, Mode=OneWay}" TextWrapping="Wrap" />
+                        <TextBlock HorizontalAlignment="Center" Text="{x:Bind ViewModel.Artist, Mode=OneWay}" TextWrapping="Wrap" />
+                        <TextBlock HorizontalAlignment="Center" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="{x:Bind ViewModel.Album, Mode=OneWay}" TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+            <ProgressRing
+                Grid.Row="1"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                AutomationProperties.AutomationId="MediaLoadingIndicator"
+                IsActive="{x:Bind ViewModel.IsLoading, Mode=OneWay}"
+                Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            <InfoBar
+                Grid.Row="1"
+                VerticalAlignment="Top"
+                AutomationProperties.AutomationId="EditionErrorInfoBar"
+                IsOpen="{x:Bind ViewModel.HasError, Mode=OneWay}"
+                Message="{x:Bind ViewModel.ErrorMessage, Mode=OneWay}"
+                Severity="Error" />
+        </Grid>
+    </ScrollViewer>
+</Page>
