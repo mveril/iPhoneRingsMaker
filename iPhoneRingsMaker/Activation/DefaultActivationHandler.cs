@@ -2,10 +2,11 @@
 using iPhoneRingsMaker.ViewModels;
 
 using Microsoft.UI.Xaml;
+using Windows.ApplicationModel.Activation;
 
 namespace iPhoneRingsMaker.Activation;
 
-public class DefaultActivationHandler : ActivationHandler<LaunchActivatedEventArgs>
+public class DefaultActivationHandler : ActivationHandler<ILaunchActivatedEventArgs>
 {
     private readonly INavigationService _navigationService;
 
@@ -14,13 +15,13 @@ public class DefaultActivationHandler : ActivationHandler<LaunchActivatedEventAr
         _navigationService = navigationService;
     }
 
-    protected override bool CanHandleInternal(LaunchActivatedEventArgs args)
+    protected override bool CanHandleInternal(ILaunchActivatedEventArgs args)
     {
         // None of the ActivationHandlers has handled the activation.
         return _navigationService.Frame?.Content == null;
     }
 
-    protected async override Task HandleInternalAsync(LaunchActivatedEventArgs args)
+    protected async override Task HandleInternalAsync(ILaunchActivatedEventArgs args)
     {
         _navigationService.NavigateTo(typeof(EditionViewModel).FullName!, args.Arguments);
 
