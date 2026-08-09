@@ -22,7 +22,7 @@
     <Nullable>enable</Nullable>
     <UseRidGraph>true</UseRidGraph>
     <UseWinUI>true</UseWinUI>
-	  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <EnableMsixTooling>true</EnableMsixTooling>
     <DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN</DefineConstants>
   </PropertyGroup>
