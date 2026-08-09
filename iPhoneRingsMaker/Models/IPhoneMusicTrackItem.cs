@@ -1,11 +1,11 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using iPhoneRingsMaker.Core.Models;
 using iPhoneRingsMaker.Helpers;
-
 using Microsoft.UI.Xaml.Media;
 
 namespace iPhoneRingsMaker.Models;
 
-public sealed class IPhoneMusicTrackItem
+public sealed partial class IPhoneMusicTrackItem : ObservableObject
 {
     public IPhoneMusicTrackItem(IPhoneMusicTrack track)
     {
@@ -15,7 +15,7 @@ public sealed class IPhoneMusicTrackItem
 
     public IPhoneMusicTrack Track
     {
-        get;
+        get; private set;
     }
 
     public string Title => Track.Title;
@@ -26,9 +26,10 @@ public sealed class IPhoneMusicTrackItem
 
     public string Album => Track.Album ?? string.Empty;
 
-    public ImageSource? Artwork
+    [ObservableProperty]
+    public partial ImageSource? Artwork
     {
-        get;
+        get; private set;
     }
 
     public string Duration => Track.Duration.ToString(@"m\:ss");
@@ -46,5 +47,16 @@ public sealed class IPhoneMusicTrackItem
         IPhoneMusicTrackAvailability.UnsupportedFormat => "MusicLibrary_Unsupported".GetLocalized(),
         _ => "MusicLibrary_Unsupported".GetLocalized(),
     };
+
+    public void UpdateTrack(IPhoneMusicTrack track)
+    {
+        if (!StringComparer.Ordinal.Equals(Track.PersistentIdentifier, track.PersistentIdentifier))
+        {
+            throw new ArgumentException("The updated track identifier must match the item.", nameof(track));
+        }
+
+        Track = track;
+        Artwork = ArtworkSourceFactory.CreateImageSource(track);
+    }
 
 }

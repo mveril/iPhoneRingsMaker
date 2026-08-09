@@ -13,6 +13,14 @@ public interface IAppleMusicLibraryService : IDisposable
         IPhoneMediaSource source,
         CancellationToken cancellationToken = default);
 
+    Task<IIPhoneArtworkLoadingSession> CreateArtworkLoadingSessionAsync(
+        AppleDeviceInfo device,
+        IReadOnlyList<IPhoneMusicTrack> tracks,
+        IProgress<IPhoneMusicTrack> progress,
+        CancellationToken cancellationToken = default);
+
+    void InvalidateCatalog(string deviceIdentifier);
+
     Task<string> GetCachedTrackPathAsync(
         IPhoneMediaSource source,
         CancellationToken cancellationToken = default);
