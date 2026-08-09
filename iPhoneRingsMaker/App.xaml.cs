@@ -13,6 +13,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.Windows.AppLifecycle;
 
 namespace iPhoneRingsMaker;
 
@@ -20,6 +21,8 @@ namespace iPhoneRingsMaker;
 public partial class App : Application
 {
     private readonly MainWindow _mainWindow;
+    private readonly AppActivationArguments _activationArguments;
+
     // The .NET Generic Host provides dependency injection, configuration, logging, and other services.
     // https://docs.microsoft.com/dotnet/core/extensions/generic-host
     // https://docs.microsoft.com/dotnet/core/extensions/dependency-injection
@@ -37,18 +40,27 @@ public partial class App : Application
     }
 
     public App()
+        : this(AppInstance.GetCurrent().GetActivatedEventArgs())
     {
+    }
+
+    internal App(AppActivationArguments activationArguments)
+    {
+        _activationArguments = activationArguments;
         var builder = Microsoft.Extensions.Hosting.Host.CreateApplicationBuilder(new HostApplicationBuilderSettings
         {
             ContentRootPath = AppContext.BaseDirectory,
         });
 
-        builder.Services.AddTransient<ActivationHandler<LaunchActivatedEventArgs>, DefaultActivationHandler>();
+        builder.Services.AddTransient<IActivationHandler, M4RProjActivationHandler>();
+        builder.Services.AddTransient<ActivationHandler<Windows.ApplicationModel.Activation.ILaunchActivatedEventArgs>, DefaultActivationHandler>();
         builder.Services.AddSingleton<ILocalSettingsService, LocalSettingsService>();
         builder.Services.AddSingleton<IThemeSelectorService, ThemeSelectorService>();
+        builder.Services.AddSingleton<IJumplistService, JumpListService>();
         builder.Services.AddSingleton<IActivationService, ActivationService>();
         builder.Services.AddSingleton<IPageService, PageService>();
         builder.Services.AddSingleton<INavigationService, NavigationService>();
+        builder.Services.AddSingleton<IProjectInstanceRegistry, ProjectInstanceRegistry>();
         builder.Services.AddSingleton<IM4RProjectManager, M4RProjectManager>();
         builder.Services.AddSingleton<IM4RProjectFactory, M4RProjectFactory>();
         builder.Services.AddSingleton<IFileService, FileService>();
@@ -83,7 +95,14 @@ public partial class App : Application
         _mainWindow = GetService<MainWindow>();
         _mainWindow.ConfirmCloseAsync = GetService<ShellViewModel>().ConfirmDiscardChangesAsync;
 
+        AppInstance.GetCurrent().Activated += OnActivated;
         UnhandledException += App_UnhandledException;
+    }
+
+    private void OnActivated(object? sender, AppActivationArguments args)
+    {
+        _mainWindow.DispatcherQueue.TryEnqueue(
+            async () => await GetService<IActivationService>().ActivateAsync(args.Data));
     }
 
     private async void App_UnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
@@ -122,6 +141,6 @@ public partial class App : Application
         ((XamlUICommand)Resources["OpenIPhoneMusicCommand"])
             .Command = GetService<ShellViewModel>().OpenIPhoneMusicCommand;
 
-        await GetService<IActivationService>().ActivateAsync(args);
+        await GetService<IActivationService>().ActivateAsync(_activationArguments.Data);
     }
 }

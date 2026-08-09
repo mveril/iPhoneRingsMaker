@@ -289,4 +289,5 @@
   <data name="WifiAccess_StateUnavailable" xml:space="preserve"><value>Indisponible</value></data>
   <data name="WifiAccess_StateOn" xml:space="preserve"><value>Activé</value></data>
   <data name="WifiAccess_StateOff" xml:space="preserve"><value>Désactivé</value></data>
+  <data name="ProjectFileTypeDisplayName" xml:space="preserve"><value>Projet de sonnerie iPhone</value></data>
 </root>

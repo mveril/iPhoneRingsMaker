@@ -38,11 +38,11 @@ public interface IM4RProjectManager
         get; set;
     }
 
-    Task OpenProjectAsync(string path, CancellationToken cancellationToken = default);
+    Task<bool> OpenProjectAsync(string path, CancellationToken cancellationToken = default);
 
     Task SaveProjectAsync(CancellationToken cancellationToken = default);
 
-    Task SaveProjectAsAsync(string path, CancellationToken cancellationToken = default);
+    Task<bool> SaveProjectAsAsync(string path, CancellationToken cancellationToken = default);
 
     ValueTask CloseProjectAsync();
 }
