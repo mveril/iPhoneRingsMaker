@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -269,6 +269,12 @@
   <data name="MusicLibrary_ConnectionHelp.Message" xml:space="preserve"><value>Connectez et déverrouillez l’iPhone pour parcourir sa bibliothèque locale.</value></data>
   <data name="Edition_TrimTip.Title" xml:space="preserve"><value>Choisissez le meilleur extrait</value></data>
   <data name="Edition_TrimTip.Subtitle" xml:space="preserve"><value>Faites glisser les deux poignées pour définir une sonnerie de 40 secondes maximum.</value></data>
+  <data name="Edition_SetStartAtPlayback.Content" xml:space="preserve"><value>Placer le début</value></data>
+  <data name="Edition_SetStartAtPlayback.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Placer le début de la sonnerie à la position de lecture actuelle</value></data>
+  <data name="Edition_SetStartAtPlayback.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Déplacer la poignée gauche jusqu’à la position de lecture actuelle</value></data>
+  <data name="Edition_SetEndAtPlayback.Content" xml:space="preserve"><value>Placer la fin</value></data>
+  <data name="Edition_SetEndAtPlayback.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Placer la fin de la sonnerie à la position de lecture actuelle</value></data>
+  <data name="Edition_SetEndAtPlayback.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Déplacer la poignée droite jusqu’à la position de lecture actuelle</value></data>
   <data name="Conversion_TransferTip.Title" xml:space="preserve"><value>Votre sonnerie est prête</value></data>
   <data name="Conversion_TransferTip.Subtitle" xml:space="preserve"><value>Vous pouvez maintenant l’envoyer directement vers votre iPhone.</value></data>
   <data name="Edition_ContextShowInExplorer.Text" xml:space="preserve"><value>Afficher le fichier audio dans l’Explorateur</value></data>
