@@ -45,6 +45,7 @@ public partial class App : Application
 
         builder.Services.AddTransient<ActivationHandler<LaunchActivatedEventArgs>, DefaultActivationHandler>();
         builder.Services.AddSingleton<ILocalSettingsService, LocalSettingsService>();
+        builder.Services.AddSingleton<IPlaybackSettingsService, PlaybackSettingsService>();
         builder.Services.AddSingleton<IThemeSelectorService, ThemeSelectorService>();
         builder.Services.AddSingleton<IActivationService, ActivationService>();
         builder.Services.AddSingleton<IPageService, PageService>();

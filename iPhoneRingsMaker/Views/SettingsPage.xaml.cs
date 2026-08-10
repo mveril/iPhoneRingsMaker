@@ -16,4 +16,12 @@ public sealed partial class SettingsPage : Page
         ViewModel = viewModel;
         InitializeComponent();
     }
+
+    private async void SkipIntervalNumberBox_ValueChanged(NumberBox sender, NumberBoxValueChangedEventArgs args)
+    {
+        if (!double.IsNaN(args.NewValue))
+        {
+            await ViewModel.SetSkipIntervalSecondsAsync(args.NewValue);
+        }
+    }
 }

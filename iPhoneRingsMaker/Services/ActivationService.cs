@@ -11,6 +11,7 @@ public class ActivationService : IActivationService
 {
     private readonly ActivationHandler<LaunchActivatedEventArgs> _defaultHandler;
     private readonly IEnumerable<IActivationHandler> _activationHandlers;
+    private readonly IPlaybackSettingsService _playbackSettingsService;
     private readonly IThemeSelectorService _themeSelectorService;
     private readonly IWindowContext _windowContext;
     private readonly ShellPage _shell;
@@ -18,12 +19,14 @@ public class ActivationService : IActivationService
     public ActivationService(
         ActivationHandler<LaunchActivatedEventArgs> defaultHandler,
         IEnumerable<IActivationHandler> activationHandlers,
+        IPlaybackSettingsService playbackSettingsService,
         IThemeSelectorService themeSelectorService,
         IWindowContext windowContext,
         ShellPage shell)
     {
         _defaultHandler = defaultHandler;
         _activationHandlers = activationHandlers;
+        _playbackSettingsService = playbackSettingsService;
         _themeSelectorService = themeSelectorService;
         _windowContext = windowContext;
         _shell = shell;
@@ -67,6 +70,7 @@ public class ActivationService : IActivationService
 
     private async Task InitializeAsync()
     {
+        await _playbackSettingsService.InitializeAsync().ConfigureAwait(false);
         await _themeSelectorService.InitializeAsync().ConfigureAwait(false);
         await Task.CompletedTask;
     }

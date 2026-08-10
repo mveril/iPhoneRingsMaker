@@ -14,6 +14,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <TextBlock
@@ -68,6 +69,31 @@
 
             <Border
                 Grid.Row="2"
+                Padding="20"
+                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                BorderThickness="1"
+                CornerRadius="{ThemeResource ControlCornerRadius}">
+                <StackPanel Spacing="12">
+                    <TextBlock x:Uid="Settings_Playback" Style="{ThemeResource SubtitleTextBlockStyle}" />
+                    <NumberBox
+                        x:Uid="Settings_SkipInterval"
+                        Width="180"
+                        HorizontalAlignment="Left"
+                        AutomationProperties.AutomationId="PlaybackSkipIntervalNumberBox"
+                        LargeChange="5"
+                        Maximum="10"
+                        Minimum="1"
+                        SmallChange="1"
+                        SpinButtonPlacementMode="Inline"
+                        ValidationMode="InvalidInputOverwritten"
+                        Value="{x:Bind ViewModel.SkipIntervalSeconds, Mode=OneWay}"
+                        ValueChanged="SkipIntervalNumberBox_ValueChanged" />
+                </StackPanel>
+            </Border>
+
+            <Border
+                Grid.Row="3"
                 Padding="20"
                 Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                 BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"

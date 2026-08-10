@@ -13,6 +13,7 @@ namespace iPhoneRingsMaker.ViewModels;
 
 public partial class SettingsViewModel : ObservableRecipient
 {
+    private readonly IPlaybackSettingsService _playbackSettingsService;
     private readonly IThemeSelectorService _themeSelectorService;
 
     [ObservableProperty]
@@ -27,12 +28,29 @@ public partial class SettingsViewModel : ObservableRecipient
         get; set;
     }
 
-    public SettingsViewModel(IThemeSelectorService themeSelectorService)
+    [ObservableProperty]
+    public partial double SkipIntervalSeconds
+    {
+        get; set;
+    }
+
+    public SettingsViewModel(
+        IThemeSelectorService themeSelectorService,
+        IPlaybackSettingsService playbackSettingsService)
     {
         _themeSelectorService = themeSelectorService;
+        _playbackSettingsService = playbackSettingsService;
         ElementTheme = _themeSelectorService.Theme;
+        SkipIntervalSeconds = _playbackSettingsService.SkipIntervalSeconds;
         VersionDescription = GetVersionDescription();
 
+    }
+
+    public async Task SetSkipIntervalSecondsAsync(double value)
+    {
+        var interval = (int)Math.Round(value);
+        await _playbackSettingsService.SetSkipIntervalSecondsAsync(interval);
+        SkipIntervalSeconds = _playbackSettingsService.SkipIntervalSeconds;
     }
 
     [RelayCommand]

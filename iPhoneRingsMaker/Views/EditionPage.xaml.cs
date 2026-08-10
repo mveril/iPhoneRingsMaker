@@ -1,4 +1,5 @@
-﻿using iPhoneRingsMaker.Core.Models;
+﻿using iPhoneRingsMaker.Contracts.Services;
+using iPhoneRingsMaker.Core.Models;
 using iPhoneRingsMaker.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -18,10 +19,13 @@ public sealed partial class EditionPage : Page
         get;
     }
 
-    public EditionPage(EditionViewModel viewModel)
+    public EditionPage(
+        EditionViewModel viewModel,
+        IPlaybackSettingsService playbackSettingsService)
     {
         ViewModel = viewModel;
         InitializeComponent();
+        PlaybackTransportControls.SkipIntervalSeconds = playbackSettingsService.SkipIntervalSeconds;
         _player = new MediaPlayer();
         MediaElement.SetMediaPlayer(_player);
         _player.PlaybackSession.PositionChanged += PlaybackSession_PositionChanged;
@@ -78,6 +82,16 @@ public sealed partial class EditionPage : Page
     private void MediaPlayerElement_DragEnter(object sender, Microsoft.UI.Xaml.DragEventArgs e)
     {
         e.AcceptedOperation = Windows.ApplicationModel.DataTransfer.DataPackageOperation.Copy;
+    }
+
+    private void PlaybackTransportControls_SkipRequested(object? sender, int seconds)
+    {
+        var position = _player.PlaybackSession.Position + TimeSpan.FromSeconds(seconds);
+        _player.PlaybackSession.Position = position < ViewModel.StartTime
+            ? ViewModel.StartTime
+            : position > ViewModel.EndTime
+                ? ViewModel.EndTime
+                : position;
     }
 
 }

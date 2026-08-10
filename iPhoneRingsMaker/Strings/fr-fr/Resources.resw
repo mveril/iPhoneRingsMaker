@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -289,4 +289,10 @@
   <data name="WifiAccess_StateUnavailable" xml:space="preserve"><value>Indisponible</value></data>
   <data name="WifiAccess_StateOn" xml:space="preserve"><value>Activé</value></data>
   <data name="WifiAccess_StateOff" xml:space="preserve"><value>Désactivé</value></data>
+  <data name="Settings_Playback.Text" xml:space="preserve"><value>Lecture</value></data>
+  <data name="Settings_SkipInterval.Header" xml:space="preserve"><value>Intervalle de saut (secondes)</value></data>
+  <data name="Settings_SkipInterval.Description" xml:space="preserve"><value>Choisissez la durée du recul ou de l’avance dans l’éditeur.</value></data>
+  <data name="Settings_SkipInterval.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Intervalle de saut de lecture en secondes</value></data>
+  <data name="Media_SkipBackward" xml:space="preserve"><value>Reculer de {0} s</value></data>
+  <data name="Media_SkipForward" xml:space="preserve"><value>Avancer de {0} s</value></data>
 </root>
