@@ -42,12 +42,12 @@ public sealed class PlaybackMediaTransportControls : MediaTransportControls
         }
 
         _skipBackwardButton = CreateSkipButton(
-            "\uED3C",
+            "\uEB9E",
             "Media_SkipBackward",
             "PlaybackSkipBackwardButton",
             -1);
         _skipForwardButton = CreateSkipButton(
-            "\uED3D",
+            "\uEB9D",
             "Media_SkipForward",
             "PlaybackSkipForwardButton",
             1);

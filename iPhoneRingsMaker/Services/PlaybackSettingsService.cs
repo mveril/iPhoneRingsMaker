@@ -9,6 +9,8 @@ public class PlaybackSettingsService(ILocalSettingsService localSettingsService)
     private const int MaximumSkipIntervalSeconds = 10;
     private const string SkipIntervalSettingsKey = "PlaybackSkipIntervalSeconds";
 
+    public event EventHandler? SkipIntervalSecondsChanged;
+
     public int SkipIntervalSeconds
     {
         get;
@@ -23,8 +25,15 @@ public class PlaybackSettingsService(ILocalSettingsService localSettingsService)
 
     public async Task SetSkipIntervalSecondsAsync(int value)
     {
-        SkipIntervalSeconds = Normalize(value);
+        var normalizedValue = Normalize(value);
+        if (SkipIntervalSeconds == normalizedValue)
+        {
+            return;
+        }
+
+        SkipIntervalSeconds = normalizedValue;
         await localSettingsService.SaveSettingAsync(SkipIntervalSettingsKey, SkipIntervalSeconds);
+        SkipIntervalSecondsChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private static int Normalize(int value) =>

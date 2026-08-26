@@ -12,6 +12,7 @@ namespace iPhoneRingsMaker.Views;
 public sealed partial class EditionPage : Page
 {
     private readonly MediaPlayer _player;
+    private readonly IPlaybackSettingsService _playbackSettingsService;
     private bool _hasShownTrimTip;
 
     public EditionViewModel ViewModel
@@ -24,14 +25,32 @@ public sealed partial class EditionPage : Page
         IPlaybackSettingsService playbackSettingsService)
     {
         ViewModel = viewModel;
+        _playbackSettingsService = playbackSettingsService;
         InitializeComponent();
-        PlaybackTransportControls.SkipIntervalSeconds = playbackSettingsService.SkipIntervalSeconds;
         _player = new MediaPlayer();
         MediaElement.SetMediaPlayer(_player);
         _player.PlaybackSession.PositionChanged += PlaybackSession_PositionChanged;
         ViewModel.PropertyChanged += ViewModel_PropertyChanged;
-        Loaded += (_, _) => ViewModel.IsActive = true;
-        Unloaded += (_, _) => ViewModel.IsActive = false;
+        Loaded += EditionPage_Loaded;
+        Unloaded += EditionPage_Unloaded;
+    }
+
+    private void EditionPage_Loaded(object sender, RoutedEventArgs e)
+    {
+        PlaybackTransportControls.SkipIntervalSeconds = _playbackSettingsService.SkipIntervalSeconds;
+        _playbackSettingsService.SkipIntervalSecondsChanged += PlaybackSettingsService_SkipIntervalSecondsChanged;
+        ViewModel.IsActive = true;
+    }
+
+    private void EditionPage_Unloaded(object sender, RoutedEventArgs e)
+    {
+        _playbackSettingsService.SkipIntervalSecondsChanged -= PlaybackSettingsService_SkipIntervalSecondsChanged;
+        ViewModel.IsActive = false;
+    }
+
+    private void PlaybackSettingsService_SkipIntervalSecondsChanged(object? sender, EventArgs e)
+    {
+        PlaybackTransportControls.SkipIntervalSeconds = _playbackSettingsService.SkipIntervalSeconds;
     }
 
     private void PlaybackSession_PositionChanged(MediaPlaybackSession sender, object args)
