@@ -216,14 +216,14 @@
     <value>Close</value>
   </data>
   <data name="Edition_EmptyTitle.Text" xml:space="preserve"><value>Create your ringtone</value></data>
-  <data name="Edition_EmptyDescription.Text" xml:space="preserve"><value>Choose an audio file or drop it into this window to select an excerpt up to 40 seconds long.</value></data>
+  <data name="Edition_EmptyDescription.Text" xml:space="preserve"><value>Choose an audio file or drop it into this window to select an excerpt up to 30 seconds long.</value></data>
   <data name="Command_OpenMedia.Label" xml:space="preserve"><value>Choose an audio file</value></data>
   <data name="Edition_DropHint.Text" xml:space="preserve"><value>You can drop another audio file directly onto the player.</value></data>
   <data name="Edition_StartLabel.Text" xml:space="preserve"><value>Start</value></data>
   <data name="Edition_EndLabel.Text" xml:space="preserve"><value>End</value></data>
   <data name="Edition_DurationLabel.Text" xml:space="preserve"><value>Duration:</value></data>
   <data name="Edition_TrimSelector.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Ringtone range</value></data>
-  <data name="Edition_DurationLimit.Message" xml:space="preserve"><value>A ringtone can be up to 40 seconds long.</value></data>
+  <data name="Edition_DurationLimit.Message" xml:space="preserve"><value>A ringtone can be up to 30 seconds long.</value></data>
   <data name="Edition_Continue.Content" xml:space="preserve"><value>Continue to export</value></data>
   <data name="Edition_LoadError" xml:space="preserve"><value>This media could not be loaded: {0}</value></data>
   <data name="Conversion_EmptyTitle.Text" xml:space="preserve"><value>No excerpt to export</value></data>
@@ -268,7 +268,13 @@
   <data name="MusicLibrary_ConnectionHelp.Title" xml:space="preserve"><value>No iPhone detected</value></data>
   <data name="MusicLibrary_ConnectionHelp.Message" xml:space="preserve"><value>Connect and unlock the iPhone to browse its local music library.</value></data>
   <data name="Edition_TrimTip.Title" xml:space="preserve"><value>Choose the best excerpt</value></data>
-  <data name="Edition_TrimTip.Subtitle" xml:space="preserve"><value>Drag both handles to define a ringtone up to 40 seconds long.</value></data>
+  <data name="Edition_TrimTip.Subtitle" xml:space="preserve"><value>Drag both handles to define a ringtone up to 30 seconds long.</value></data>
+  <data name="Edition_SetStartAtPlaybackLabel.Text" xml:space="preserve"><value>Set start</value></data>
+  <data name="Edition_SetStartAtPlayback.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Set ringtone start to current playback position</value></data>
+  <data name="Edition_SetStartAtPlayback.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Move the left trim handle to the current playback position (I)</value></data>
+  <data name="Edition_SetEndAtPlaybackLabel.Text" xml:space="preserve"><value>Set end</value></data>
+  <data name="Edition_SetEndAtPlayback.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Set ringtone end to current playback position</value></data>
+  <data name="Edition_SetEndAtPlayback.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Move the right trim handle to the current playback position (O)</value></data>
   <data name="Conversion_TransferTip.Title" xml:space="preserve"><value>Your ringtone is ready</value></data>
   <data name="Conversion_TransferTip.Subtitle" xml:space="preserve"><value>You can now send it directly to your iPhone.</value></data>
   <data name="Edition_ContextShowInExplorer.Text" xml:space="preserve"><value>Show audio file in File Explorer</value></data>

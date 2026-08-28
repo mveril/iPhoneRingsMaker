@@ -8,7 +8,7 @@ iPhoneRingsMaker is a Windows desktop application for creating M4R ringtones and
 ## Features
 
 - Open or drag an audio file into the application.
-- Select an excerpt of up to 40 seconds.
+- Select an excerpt of up to 30 seconds.
 - Export the selection as an M4R ringtone.
 - Browse compatible music stored locally on an iPhone.
 - Transfer a ringtone directly to a connected Apple device.

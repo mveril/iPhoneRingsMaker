@@ -80,4 +80,14 @@ public sealed partial class EditionPage : Page
         e.AcceptedOperation = Windows.ApplicationModel.DataTransfer.DataPackageOperation.Copy;
     }
 
+    private void SetStartAtPlaybackButton_Click(object sender, RoutedEventArgs e)
+    {
+        ViewModel.SetStartAtPlayback(_player.PlaybackSession.Position);
+    }
+
+    private void SetEndAtPlaybackButton_Click(object sender, RoutedEventArgs e)
+    {
+        ViewModel.SetEndAtPlayback(_player.PlaybackSession.Position);
+    }
+
 }
