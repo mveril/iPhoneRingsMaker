@@ -269,10 +269,10 @@
   <data name="MusicLibrary_ConnectionHelp.Message" xml:space="preserve"><value>Connect and unlock the iPhone to browse its local music library.</value></data>
   <data name="Edition_TrimTip.Title" xml:space="preserve"><value>Choose the best excerpt</value></data>
   <data name="Edition_TrimTip.Subtitle" xml:space="preserve"><value>Drag both handles to define a ringtone up to 30 seconds long.</value></data>
-  <data name="Edition_SetStartAtPlayback.Content" xml:space="preserve"><value>Set start</value></data>
+  <data name="Edition_SetStartAtPlaybackLabel.Text" xml:space="preserve"><value>Set start</value></data>
   <data name="Edition_SetStartAtPlayback.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Set ringtone start to current playback position</value></data>
   <data name="Edition_SetStartAtPlayback.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Move the left trim handle to the current playback position (I)</value></data>
-  <data name="Edition_SetEndAtPlayback.Content" xml:space="preserve"><value>Set end</value></data>
+  <data name="Edition_SetEndAtPlaybackLabel.Text" xml:space="preserve"><value>Set end</value></data>
   <data name="Edition_SetEndAtPlayback.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Set ringtone end to current playback position</value></data>
   <data name="Edition_SetEndAtPlayback.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Move the right trim handle to the current playback position (O)</value></data>
   <data name="Conversion_TransferTip.Title" xml:space="preserve"><value>Your ringtone is ready</value></data>
