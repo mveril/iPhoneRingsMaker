@@ -105,6 +105,7 @@ public partial class EditionViewModel : ObservableRecipient, INavigationAware
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(Title), nameof(Album), nameof(Artist), nameof(MaximumDuration), nameof(EndTime))]
+    [NotifyCanExecuteChangedFor(nameof(ContinueToConversionCommand))]
     public partial MusicMetadata? Metadata
     {
         get; set;
@@ -169,6 +170,11 @@ public partial class EditionViewModel : ObservableRecipient, INavigationAware
                     ? MaximumDuration.Value
                     : value;
 
+            if (clampedValue >= MaximumDuration.Value)
+            {
+                return;
+            }
+
             if (_projectManager.Project.StartTime != clampedValue)
             {
                 _projectManager.Project.StartTime = clampedValue;
@@ -206,11 +212,14 @@ public partial class EditionViewModel : ObservableRecipient, INavigationAware
                 maximumEndTime = MaximumDuration.Value;
             }
 
-            var clampedValue = value <= StartTime
-                ? StartTime
-                : value > maximumEndTime
-                    ? maximumEndTime
-                    : value;
+            if (value <= StartTime)
+            {
+                return;
+            }
+
+            var clampedValue = value > maximumEndTime
+                ? maximumEndTime
+                : value;
 
             _projectManager.Project.EndTime = clampedValue >= MaximumDuration.Value
                 ? null
@@ -252,12 +261,14 @@ public partial class EditionViewModel : ObservableRecipient, INavigationAware
                     OnPropertyChanged(nameof(Duration));
                     OnPropertyChanged(nameof(StartTimeDisplay));
                     OnPropertyChanged(nameof(DurationDisplay));
+                    ContinueToConversionCommand.NotifyCanExecuteChanged();
                     break;
                 case nameof(M4RProject.EndTime):
                     OnPropertyChanged(nameof(EndTime));
                     OnPropertyChanged(nameof(Duration));
                     OnPropertyChanged(nameof(EndTimeDisplay));
                     OnPropertyChanged(nameof(DurationDisplay));
+                    ContinueToConversionCommand.NotifyCanExecuteChanged();
                     break;
             }
         }
@@ -321,7 +332,27 @@ public partial class EditionViewModel : ObservableRecipient, INavigationAware
         await InitializeAsync();
     }
 
-    [RelayCommand]
+    internal void SetStartAtPlayback(TimeSpan position)
+    {
+        if (position > StartTime && position < EndTime)
+        {
+            StartTime = position;
+        }
+    }
+
+    internal void SetEndAtPlayback(TimeSpan position)
+    {
+        if (position > StartTime && position < EndTime)
+        {
+            EndTime = position;
+        }
+    }
+
+    private bool CanContinueToConversion() =>
+        MaximumDuration.HasValue
+        && RingtoneConstraints.IsValidRange(StartTime, EndTime, MaximumDuration.Value);
+
+    [RelayCommand(CanExecute = nameof(CanContinueToConversion))]
     private void ContinueToConversion() =>
         _navigationService.NavigateTo(typeof(ConversionViewModel).FullName!);
 

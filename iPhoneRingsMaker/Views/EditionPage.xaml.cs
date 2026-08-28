@@ -82,12 +82,12 @@ public sealed partial class EditionPage : Page
 
     private void SetStartAtPlaybackButton_Click(object sender, RoutedEventArgs e)
     {
-        ViewModel.StartTime = _player.PlaybackSession.Position;
+        ViewModel.SetStartAtPlayback(_player.PlaybackSession.Position);
     }
 
     private void SetEndAtPlaybackButton_Click(object sender, RoutedEventArgs e)
     {
-        ViewModel.EndTime = _player.PlaybackSession.Position;
+        ViewModel.SetEndAtPlayback(_player.PlaybackSession.Position);
     }
 
 }

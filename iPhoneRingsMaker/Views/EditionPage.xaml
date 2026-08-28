@@ -131,7 +131,10 @@
                             </Grid.ColumnDefinitions>
                             <StackPanel VerticalAlignment="Center">
                                 <TextBlock x:Uid="Edition_StartLabel" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                                <TextBlock Text="{x:Bind ViewModel.StartTimeDisplay, Mode=OneWay}" />
+                                <TextBlock
+                                    AutomationProperties.AutomationId="StartTimeDisplay"
+                                    AutomationProperties.LiveSetting="Polite"
+                                    Text="{x:Bind ViewModel.StartTimeDisplay, Mode=OneWay}" />
                             </StackPanel>
                             <toolkit:RangeSelector
                                 x:Name="TrimRangeSelector"
@@ -154,7 +157,10 @@
                             </TeachingTip>
                             <StackPanel Grid.Column="2" VerticalAlignment="Center">
                                 <TextBlock x:Uid="Edition_EndLabel" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                                <TextBlock Text="{x:Bind ViewModel.EndTimeDisplay, Mode=OneWay}" />
+                                <TextBlock
+                                    AutomationProperties.AutomationId="EndTimeDisplay"
+                                    AutomationProperties.LiveSetting="Polite"
+                                    Text="{x:Bind ViewModel.EndTimeDisplay, Mode=OneWay}" />
                             </StackPanel>
                         </Grid>
                         <Grid ColumnSpacing="8">
@@ -166,13 +172,21 @@
                                 x:Uid="Edition_SetStartAtPlayback"
                                 HorizontalAlignment="Left"
                                 AutomationProperties.AutomationId="SetStartAtPlaybackButton"
-                                Click="SetStartAtPlaybackButton_Click" />
+                                Click="SetStartAtPlaybackButton_Click">
+                                <Button.KeyboardAccelerators>
+                                    <KeyboardAccelerator Key="I" />
+                                </Button.KeyboardAccelerators>
+                            </Button>
                             <Button
                                 x:Uid="Edition_SetEndAtPlayback"
                                 Grid.Column="1"
                                 HorizontalAlignment="Right"
                                 AutomationProperties.AutomationId="SetEndAtPlaybackButton"
-                                Click="SetEndAtPlaybackButton_Click" />
+                                Click="SetEndAtPlaybackButton_Click">
+                                <Button.KeyboardAccelerators>
+                                    <KeyboardAccelerator Key="O" />
+                                </Button.KeyboardAccelerators>
+                            </Button>
                         </Grid>
                         <StackPanel Orientation="Horizontal" Spacing="6">
                             <TextBlock x:Uid="Edition_DurationLabel" Style="{ThemeResource BodyStrongTextBlockStyle}" />

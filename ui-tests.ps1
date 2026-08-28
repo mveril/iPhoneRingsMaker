@@ -1,4 +1,7 @@
-param([Parameter(Mandatory)][int]$AppPid)
+param(
+    [Parameter(Mandatory)][int]$AppPid,
+    [string]$MediaPath
+)
 
 $ErrorActionPreference = 'Continue'
 $pass = 0
@@ -63,6 +66,40 @@ Test-UI 'Navigate to Settings' { winapp ui invoke 'SettingsButton' -a $AppPid }
 Test-UI 'Settings page loaded' { winapp ui wait-for 'SettingsPageTitle' -a $AppPid -t 5000 }
 Test-UI 'Theme selector is accessible' { winapp ui wait-for 'ThemeSelector' -a $AppPid -t 5000 }
 winapp ui screenshot -a $AppPid -o 'screenshots/05-settings.png' 2>$null
+
+if (-not [string]::IsNullOrWhiteSpace($MediaPath))
+{
+    Test-UI 'Navigate to Edition for trim controls' { winapp ui invoke 'EditionNavigationItem' -a $AppPid }
+    Test-UI 'Load media for trim controls' {
+        if (-not (Test-Path -LiteralPath $MediaPath -PathType Leaf))
+        {
+            throw "Media file not found: $MediaPath"
+        }
+
+        winapp ui invoke 'OpenMediaEmptyStateButton' -a $AppPid
+        Start-Sleep -Milliseconds 500
+        $windows = winapp ui list-windows -a $AppPid --json 2>$null | ConvertFrom-Json
+        $picker = $windows | Where-Object { $_.title -match 'Open|Ouvrir' } | Select-Object -First 1
+        if (-not $picker)
+        {
+            throw 'The media file picker did not open.'
+        }
+
+        winapp ui set-value 'FileNameControlHost' (Resolve-Path -LiteralPath $MediaPath).Path -w $picker.hwnd
+        winapp ui send-keys 'enter' -w $picker.hwnd --via send-input
+    }
+    Test-UI 'Set start control exists' { winapp ui wait-for 'SetStartAtPlaybackButton' -a $AppPid -t 5000 }
+    Test-UI 'Set end control exists' { winapp ui wait-for 'SetEndAtPlaybackButton' -a $AppPid -t 5000 }
+    Test-UI 'Set start shortcut is handled' {
+        winapp ui send-keys 'i' -a $AppPid --via send-input
+        winapp ui wait-for 'SetStartAtPlaybackButton' -a $AppPid -t 2000
+    }
+    Test-UI 'Set end shortcut is handled' {
+        winapp ui send-keys 'o' -a $AppPid --via send-input
+        winapp ui wait-for 'SetEndAtPlaybackButton' -a $AppPid -t 2000
+    }
+    winapp ui screenshot -a $AppPid -o 'screenshots/06-trim-controls.png' 2>$null
+}
 
 $elements = (winapp ui inspect -a $AppPid --interactive --json 2>$null | ConvertFrom-Json).windows.elements
 $missingAutomationIds = @($elements | Where-Object {
