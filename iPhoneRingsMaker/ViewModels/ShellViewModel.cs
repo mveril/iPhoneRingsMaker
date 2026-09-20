@@ -184,8 +184,7 @@ public partial class ShellViewModel : ObservableRecipient
             return false;
         }
 
-        await _projectManager.SaveProjectAsAsync(path);
-        return true;
+        return await _projectManager.SaveProjectAsAsync(path);
     }
 
     public async Task<bool> ConfirmDiscardChangesAsync()

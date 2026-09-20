@@ -56,6 +56,14 @@
                   </com:ExeServer>
               </com:ComServer>
           </com:Extension>
+          <uap:Extension Category="windows.fileTypeAssociation">
+              <uap:FileTypeAssociation Name="m4rproj">
+                  <uap:SupportedFileTypes>
+                      <uap:FileType>.m4rproj</uap:FileType>
+                  </uap:SupportedFileTypes>
+                  <uap:DisplayName>ms-resource:ProjectFileTypeDisplayName</uap:DisplayName>
+              </uap:FileTypeAssociation>
+          </uap:Extension>
       </Extensions>
     </Application>
   </Applications>

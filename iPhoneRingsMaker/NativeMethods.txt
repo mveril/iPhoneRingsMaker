@@ -1,0 +1,5 @@
+GetActiveWindow
+GetCurrentPackageFullName
+SendMessage
+SetForegroundWindow
+ShowWindow

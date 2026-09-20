@@ -289,4 +289,5 @@
   <data name="WifiAccess_StateUnavailable" xml:space="preserve"><value>Unavailable</value></data>
   <data name="WifiAccess_StateOn" xml:space="preserve"><value>On</value></data>
   <data name="WifiAccess_StateOff" xml:space="preserve"><value>Off</value></data>
+  <data name="ProjectFileTypeDisplayName" xml:space="preserve"><value>iPhone ringtone project</value></data>
 </root>
