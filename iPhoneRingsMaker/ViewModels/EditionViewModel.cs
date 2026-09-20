@@ -334,7 +334,7 @@ public partial class EditionViewModel : ObservableRecipient, INavigationAware
 
     internal void SetStartAtPlayback(TimeSpan position)
     {
-        if (position > StartTime && position < EndTime)
+        if (position < EndTime)
         {
             StartTime = position;
         }
@@ -342,7 +342,7 @@ public partial class EditionViewModel : ObservableRecipient, INavigationAware
 
     internal void SetEndAtPlayback(TimeSpan position)
     {
-        if (position > StartTime && position < EndTime)
+        if (position > StartTime)
         {
             EndTime = position;
         }
