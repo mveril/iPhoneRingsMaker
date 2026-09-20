@@ -322,6 +322,7 @@ public sealed class AppleMusicLibraryService : IAppleMusicLibraryService
     private sealed class CatalogLoad : IDisposable
     {
         private readonly CancellationTokenSource _cancellation;
+        private int _disposeRequested;
 
         public CatalogLoad(
             Task<IReadOnlyList<IPhoneMusicTrack>> task,
@@ -338,7 +339,26 @@ public sealed class AppleMusicLibraryService : IAppleMusicLibraryService
 
         public void Cancel() => _cancellation.Cancel();
 
-        public void Dispose() => _cancellation.Dispose();
+        public void Dispose()
+        {
+            if (Interlocked.Exchange(ref _disposeRequested, 1) != 0)
+            {
+                return;
+            }
+
+            if (Task.IsCompleted)
+            {
+                _cancellation.Dispose();
+                return;
+            }
+
+            _ = Task.ContinueWith(
+                static (_, state) => ((CancellationTokenSource)state!).Dispose(),
+                _cancellation,
+                CancellationToken.None,
+                TaskContinuationOptions.ExecuteSynchronously,
+                TaskScheduler.Default);
+        }
     }
 
     private static void TryDeleteDirectory(string path)
