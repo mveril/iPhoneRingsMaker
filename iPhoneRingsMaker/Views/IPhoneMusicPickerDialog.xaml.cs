@@ -39,6 +39,16 @@ public sealed partial class IPhoneMusicPickerDialog : ContentDialog
 
     private void OnUnloaded(object sender, RoutedEventArgs e) => ViewModel.Deactivate();
 
+    private void OnTrackContainerContentChanging(
+        ListViewBase sender,
+        ContainerContentChangingEventArgs args)
+    {
+        if (args.Item is IPhoneMusicTrackItem item)
+        {
+            ViewModel.SetTrackVisibility(item, !args.InRecycleQueue);
+        }
+    }
+
     private void OnPrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
     {
         SelectedSource = ViewModel.CreateSelectedSource();
