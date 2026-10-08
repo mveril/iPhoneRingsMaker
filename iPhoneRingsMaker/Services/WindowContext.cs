@@ -3,6 +3,10 @@ using iPhoneRingsMaker.Contracts.Services;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 
+using Windows.Win32;
+using Windows.Win32.Foundation;
+using Windows.Win32.UI.WindowsAndMessaging;
+
 namespace iPhoneRingsMaker.Services;
 
 public sealed class WindowContext : IWindowContext
@@ -26,7 +30,14 @@ public sealed class WindowContext : IWindowContext
         set => _window.AppTitleBar = value;
     }
 
-    public void Activate() => _window.Activate();
+    public void Activate()
+    {
+        _window.Activate();
+
+        var hwnd = new HWND(WinRT.Interop.WindowNative.GetWindowHandle(_window));
+        PInvoke.ShowWindow(hwnd, SHOW_WINDOW_CMD.SW_RESTORE);
+        PInvoke.SetForegroundWindow(hwnd);
+    }
 
     public void CloseWithoutConfirmation() => _window.CloseWithoutConfirmation();
 }

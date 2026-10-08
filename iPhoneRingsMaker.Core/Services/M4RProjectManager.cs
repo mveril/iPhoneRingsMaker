@@ -9,8 +9,16 @@ namespace iPhoneRingsMaker.Services;
 
 public sealed class M4RProjectManager : IM4RProjectManager
 {
+    private readonly IProjectInstanceRegistry _instanceRegistry;
     private string? _path;
     private M4RProject? _project;
+
+    public M4RProjectManager(IProjectInstanceRegistry instanceRegistry)
+    {
+        ArgumentNullException.ThrowIfNull(instanceRegistry);
+
+        _instanceRegistry = instanceRegistry;
+    }
 
     public event EventHandler<ProjectEventArgs>? ProjectLoaded;
 
@@ -32,42 +40,17 @@ public sealed class M4RProjectManager : IM4RProjectManager
     public M4RProject? Project
     {
         get => _project;
-        set
-        {
-            if (ReferenceEquals(value, _project))
-            {
-                return;
-            }
-
-            var previousProject = _project;
-            if (previousProject is not null)
-            {
-                previousProject.PropertyChanged -= OnProjectPropertyChanged;
-            }
-
-            _project = value;
-            _path = null;
-            HasUnsavedChanges = value is not null;
-
-            if (previousProject is not null)
-            {
-                ProjectUnloaded?.Invoke(this, new ProjectEventArgs(previousProject));
-            }
-
-            if (value is not null)
-            {
-                value.PropertyChanged += OnProjectPropertyChanged;
-                ProjectLoaded?.Invoke(this, new ProjectEventArgs(value));
-            }
-        }
+        set => SetProject(value, releaseInstanceKey: true);
     }
 
-    public async Task OpenProjectAsync(string path, CancellationToken cancellationToken = default)
+    public async Task<bool> OpenProjectAsync(string path, CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(path);
 
+        var fullPath = System.IO.Path.GetFullPath(path);
+
         await using var stream = new FileStream(
-            path,
+            fullPath,
             FileMode.Open,
             FileAccess.Read,
             FileShare.Read,
@@ -77,10 +60,16 @@ public sealed class M4RProjectManager : IM4RProjectManager
         var project = await JsonSerializer.DeserializeAsync<M4RProject>(stream, Json.Options, cancellationToken)
             ?? throw new InvalidDataException("The project file is empty or invalid.");
 
-        Project = project;
-        _path = System.IO.Path.GetFullPath(path);
+        if (!_instanceRegistry.TryClaim(fullPath))
+        {
+            return false;
+        }
+
+        SetProject(project, releaseInstanceKey: false);
+        _path = fullPath;
         HasUnsavedChanges = false;
         FileAttached?.Invoke(this, EventArgs.Empty);
+        return true;
     }
 
     public Task SaveProjectAsync(CancellationToken cancellationToken = default)
@@ -93,21 +82,83 @@ public sealed class M4RProjectManager : IM4RProjectManager
         return SaveProjectAsCoreAsync(_path, cancellationToken);
     }
 
-    public async Task SaveProjectAsAsync(string path, CancellationToken cancellationToken = default)
+    public async Task<bool> SaveProjectAsAsync(string path, CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(path);
         var fullPath = System.IO.Path.GetFullPath(path);
-        await SaveProjectAsCoreAsync(fullPath, cancellationToken);
+        var previousPath = _path;
+        if (!_instanceRegistry.TryClaim(fullPath))
+        {
+            return false;
+        }
+
+        try
+        {
+            await SaveProjectAsCoreAsync(fullPath, cancellationToken);
+        }
+        catch
+        {
+            RestoreInstanceKey(previousPath);
+            throw;
+        }
+
         _path = fullPath;
         FileAttached?.Invoke(this, EventArgs.Empty);
+        return true;
     }
 
     public ValueTask CloseProjectAsync()
     {
         Project = null;
-        _path = null;
-        HasUnsavedChanges = false;
         return ValueTask.CompletedTask;
+    }
+
+    private void SetProject(M4RProject? value, bool releaseInstanceKey)
+    {
+        if (ReferenceEquals(value, _project))
+        {
+            return;
+        }
+
+        var previousProject = _project;
+        if (previousProject is not null)
+        {
+            previousProject.PropertyChanged -= OnProjectPropertyChanged;
+        }
+
+        if (releaseInstanceKey)
+        {
+            _instanceRegistry.Release();
+        }
+
+        _project = value;
+        _path = null;
+        HasUnsavedChanges = value is not null;
+
+        if (previousProject is not null)
+        {
+            ProjectUnloaded?.Invoke(this, new ProjectEventArgs(previousProject));
+        }
+
+        if (value is not null)
+        {
+            value.PropertyChanged += OnProjectPropertyChanged;
+            ProjectLoaded?.Invoke(this, new ProjectEventArgs(value));
+        }
+    }
+
+    private void RestoreInstanceKey(string? path)
+    {
+        if (path is null)
+        {
+            _instanceRegistry.Release();
+            return;
+        }
+
+        if (!_instanceRegistry.TryClaim(path))
+        {
+            throw new InvalidOperationException("The previous project instance key could not be restored.");
+        }
     }
 
     private async Task SaveProjectAsCoreAsync(string path, CancellationToken cancellationToken)
