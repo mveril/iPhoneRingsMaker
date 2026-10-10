@@ -14,7 +14,11 @@ public partial class IPhoneMusicPickerViewModel : ObservableObject, IDisposable
 {
     private readonly IAppleDeviceService _deviceService;
     private readonly IAppleMusicLibraryService _musicLibraryService;
+    private readonly Dictionary<string, IPhoneMusicTrackItem> _trackItems = new(StringComparer.Ordinal);
+    private readonly HashSet<string> _visibleTrackIdentifiers = new(StringComparer.Ordinal);
     private IReadOnlyList<IPhoneMusicTrackItem> _allTracks = [];
+    private CancellationTokenSource? _artworkCancellation;
+    private IIPhoneArtworkLoadingSession? _artworkSession;
     private CancellationTokenSource? _loadCancellation;
     private bool _isActive;
     private bool _hasCompletedDeviceDiscovery;
@@ -105,6 +109,7 @@ public partial class IPhoneMusicPickerViewModel : ObservableObject, IDisposable
         _isActive = false;
         _loadCancellation?.Cancel();
         _loadCancellation = null;
+        StopArtworkLoading();
         _deviceService.DevicesChanged -= OnDevicesChanged;
         _deviceService.StopWatching();
     }
@@ -134,12 +139,36 @@ public partial class IPhoneMusicPickerViewModel : ObservableObject, IDisposable
         GC.SuppressFinalize(this);
     }
 
+    public void SetTrackVisibility(IPhoneMusicTrackItem item, bool isVisible)
+    {
+        ArgumentNullException.ThrowIfNull(item);
+        if (isVisible)
+        {
+            _visibleTrackIdentifiers.Add(item.Track.PersistentIdentifier);
+        }
+        else
+        {
+            _visibleTrackIdentifiers.Remove(item.Track.PersistentIdentifier);
+        }
+
+        try
+        {
+            _artworkSession?.SetVisibleTracks(_visibleTrackIdentifiers);
+        }
+        catch (ObjectDisposedException)
+        {
+        }
+    }
+
     partial void OnSelectedDeviceChanged(AppleDeviceInfo? value)
     {
         if (value is null)
         {
             _loadCancellation?.Cancel();
+            StopArtworkLoading();
             _allTracks = [];
+            _trackItems.Clear();
+            _visibleTrackIdentifiers.Clear();
             FilteredTracks = [];
             return;
         }
@@ -165,7 +194,18 @@ public partial class IPhoneMusicPickerViewModel : ObservableObject, IDisposable
         try
         {
             var selectedIdentifier = SelectedDevice?.Identifier;
+            var previousIdentifiers = Devices
+                .Select(device => device.Identifier)
+                .ToHashSet(StringComparer.Ordinal);
             var devices = await _deviceService.GetDevicesAsync();
+            var currentIdentifiers = devices
+                .Select(device => device.Identifier)
+                .ToHashSet(StringComparer.Ordinal);
+            foreach (var disconnectedIdentifier in previousIdentifiers.Except(currentIdentifiers))
+            {
+                _musicLibraryService.InvalidateCatalog(disconnectedIdentifier);
+            }
+
             Devices.Clear();
             foreach (var device in devices)
             {
@@ -198,6 +238,7 @@ public partial class IPhoneMusicPickerViewModel : ObservableObject, IDisposable
     private async Task LoadTracksAsync(AppleDeviceInfo device)
     {
         _loadCancellation?.Cancel();
+        StopArtworkLoading();
         var loadCancellation = new CancellationTokenSource();
         _loadCancellation = loadCancellation;
         var cancellationToken = loadCancellation.Token;
@@ -217,11 +258,22 @@ public partial class IPhoneMusicPickerViewModel : ObservableObject, IDisposable
             var tracks = await _musicLibraryService.GetTracksAsync(device, cancellationToken);
             cancellationToken.ThrowIfCancellationRequested();
             _allTracks = tracks.Select(track => new IPhoneMusicTrackItem(track)).ToArray();
+            _trackItems.Clear();
+            foreach (var item in _allTracks)
+            {
+                _trackItems[item.Track.PersistentIdentifier] = item;
+            }
+
+            _visibleTrackIdentifiers.Clear();
             ApplyFilter();
 
             if (_allTracks.Count == 0)
             {
                 ShowStatus("MusicLibrary_Empty".GetLocalized(), PickerStatusSeverity.Informational);
+            }
+            else
+            {
+                _ = LoadArtworkAsync(device, tracks);
             }
         }
         catch (OperationCanceledException)
@@ -241,6 +293,62 @@ public partial class IPhoneMusicPickerViewModel : ObservableObject, IDisposable
                 IsLoading = false;
             }
         }
+    }
+
+    private async Task LoadArtworkAsync(
+        AppleDeviceInfo device,
+        IReadOnlyList<IPhoneMusicTrack> tracks)
+    {
+        var artworkCancellation = new CancellationTokenSource();
+        _artworkCancellation = artworkCancellation;
+        var progress = new Progress<IPhoneMusicTrack>(track =>
+        {
+            if (_trackItems.TryGetValue(track.PersistentIdentifier, out var item))
+            {
+                item.UpdateTrack(track);
+            }
+        });
+
+        try
+        {
+            await using var session = await _musicLibraryService.CreateArtworkLoadingSessionAsync(
+                device,
+                tracks,
+                progress,
+                artworkCancellation.Token);
+            if (!ReferenceEquals(_artworkCancellation, artworkCancellation))
+            {
+                return;
+            }
+
+            _artworkSession = session;
+            session.SetVisibleTracks(_visibleTrackIdentifiers);
+            await session.Completion;
+        }
+        catch (OperationCanceledException)
+        {
+        }
+        catch (Exception exception)
+        {
+            exception.RethrowIfDebuggerAttached();
+        }
+        finally
+        {
+            if (ReferenceEquals(_artworkCancellation, artworkCancellation))
+            {
+                _artworkCancellation = null;
+                _artworkSession = null;
+            }
+
+            artworkCancellation.Dispose();
+        }
+    }
+
+    private void StopArtworkLoading()
+    {
+        _artworkCancellation?.Cancel();
+        _artworkSession = null;
+        _visibleTrackIdentifiers.Clear();
     }
 
     private void ApplyFilter()

@@ -16,6 +16,7 @@ public sealed class AppleMusicLibraryService : IAppleMusicLibraryService
     private const string CatalogPath = "/iTunes_Control/iTunes/MediaLibrary.sqlitedb";
     private readonly IAppleDeviceService _deviceService;
     private readonly IPhoneMusicCatalogParser _catalogParser;
+    private readonly ConcurrentDictionary<string, CatalogLoad> _catalogLoads = new(StringComparer.Ordinal);
     private readonly ConcurrentDictionary<string, Task<string>> _trackCache = new(StringComparer.Ordinal);
     private readonly ConcurrentDictionary<string, IReadOnlyList<IPhoneMusicTrack>> _catalogCache = new(StringComparer.Ordinal);
     private readonly string _sessionCachePath;
@@ -49,6 +50,97 @@ public sealed class AppleMusicLibraryService : IAppleMusicLibraryService
         ArgumentNullException.ThrowIfNull(device);
         EnsureUsableDevice(device);
 
+        if (_catalogCache.TryGetValue(device.Identifier, out var cachedTracks))
+        {
+            return cachedTracks;
+        }
+
+        var load = _catalogLoads.GetOrAdd(
+            device.Identifier,
+            _ => CreateCatalogLoad(device));
+        try
+        {
+            var tracks = await load.Task.WaitAsync(cancellationToken).ConfigureAwait(false);
+            if (_catalogLoads.TryGetValue(device.Identifier, out var currentLoad)
+                && ReferenceEquals(currentLoad, load))
+            {
+                _catalogCache[device.Identifier] = tracks;
+            }
+
+            return tracks;
+        }
+        catch
+        {
+            if (load.Task.IsCompleted
+                && _catalogLoads.TryRemove(new KeyValuePair<string, CatalogLoad>(
+                    device.Identifier,
+                    load)))
+            {
+                load.Dispose();
+            }
+
+            throw;
+        }
+    }
+
+    public async Task<IIPhoneArtworkLoadingSession> CreateArtworkLoadingSessionAsync(
+        AppleDeviceInfo device,
+        IReadOnlyList<IPhoneMusicTrack> tracks,
+        IProgress<IPhoneMusicTrack> progress,
+        CancellationToken cancellationToken = default)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        ArgumentNullException.ThrowIfNull(device);
+        ArgumentNullException.ThrowIfNull(tracks);
+        ArgumentNullException.ThrowIfNull(progress);
+        EnsureUsableDevice(device);
+
+        var lockdown = MobileDevice.CreateUsingUsbmux(device.Identifier);
+        try
+        {
+            var syncSession = await AppleSyncSession.StartAsync(
+                lockdown,
+                _logger,
+                cancellationToken).ConfigureAwait(false);
+            return new IPhoneArtworkLoadingSession(
+                lockdown,
+                syncSession,
+                tracks,
+                progress,
+                track => CacheArtwork(device.Identifier, track),
+                _logger,
+                cancellationToken);
+        }
+        catch
+        {
+            lockdown.Dispose();
+            throw;
+        }
+    }
+
+    public void InvalidateCatalog(string deviceIdentifier)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(deviceIdentifier);
+        _catalogCache.TryRemove(deviceIdentifier, out _);
+        if (_catalogLoads.TryRemove(deviceIdentifier, out var load))
+        {
+            load.Cancel();
+            load.Dispose();
+        }
+    }
+
+    private CatalogLoad CreateCatalogLoad(AppleDeviceInfo device)
+    {
+        var cancellation = new CancellationTokenSource();
+        return new CatalogLoad(
+            LoadCatalogAsync(device, cancellation.Token),
+            cancellation);
+    }
+
+    private async Task<IReadOnlyList<IPhoneMusicTrack>> LoadCatalogAsync(
+        AppleDeviceInfo device,
+        CancellationToken cancellationToken)
+    {
         var catalogDirectory = Path.Combine(_sessionCachePath, $"catalog-{Guid.NewGuid():N}");
         Directory.CreateDirectory(catalogDirectory);
         var localCatalogPath = Path.Combine(catalogDirectory, "MediaLibrary.sqlitedb");
@@ -70,10 +162,7 @@ public sealed class AppleMusicLibraryService : IAppleMusicLibraryService
             await _deviceFileService.CopyOptionalSidecarAsync(afc, CatalogPath, localCatalogPath, "-wal", cancellationToken).ConfigureAwait(false);
             await _deviceFileService.CopyOptionalSidecarAsync(afc, CatalogPath, localCatalogPath, "-shm", cancellationToken).ConfigureAwait(false);
 
-            var tracks = await _catalogParser.ParseAsync(localCatalogPath, cancellationToken).ConfigureAwait(false);
-            var tracksWithArtwork = await LoadLocalArtworkAsync(session.Afc, tracks, cancellationToken).ConfigureAwait(false);
-            _catalogCache[device.Identifier] = tracksWithArtwork;
-            return tracksWithArtwork;
+            return await _catalogParser.ParseAsync(localCatalogPath, cancellationToken).ConfigureAwait(false);
         }
         finally
         {
@@ -108,52 +197,6 @@ public sealed class AppleMusicLibraryService : IAppleMusicLibraryService
                 $"{source.TrackDisplayName} is no longer present on {source.DeviceDisplayName}.");
     }
 
-    private async Task<IReadOnlyList<IPhoneMusicTrack>> LoadLocalArtworkAsync(
-        Netimobiledevice.Afc.AfcService afc,
-        IReadOnlyList<IPhoneMusicTrack> tracks,
-        CancellationToken cancellationToken)
-    {
-        var artworkCache = new Dictionary<string, byte[]?>(StringComparer.OrdinalIgnoreCase);
-        var result = new IPhoneMusicTrack[tracks.Count];
-        for (var index = 0; index < tracks.Count; index++)
-        {
-            var track = tracks[index];
-            if (string.IsNullOrWhiteSpace(track.ArtworkRemotePath))
-            {
-                result[index] = track;
-                continue;
-            }
-
-            if (!artworkCache.TryGetValue(track.ArtworkRemotePath, out var artworkData))
-            {
-                try
-                {
-                    artworkData = await afc.GetFileContents(
-                        track.ArtworkRemotePath,
-                        cancellationToken).ConfigureAwait(false);
-                }
-                catch (Exception exception)
-                {
-                    _logger.LogDebug(
-                        exception,
-                        "Local artwork {ArtworkPath} could not be read; the remote URL will be used as fallback.",
-                        track.ArtworkRemotePath);
-                }
-
-                artworkCache[track.ArtworkRemotePath] = artworkData;
-            }
-
-            result[index] = artworkData is null
-                ? track
-                : track with
-                {
-                    ArtworkData = artworkData
-                };
-        }
-
-        return result;
-    }
-
     public async Task<string> GetCachedTrackPathAsync(
         IPhoneMediaSource source,
         CancellationToken cancellationToken = default)
@@ -184,7 +227,35 @@ public sealed class AppleMusicLibraryService : IAppleMusicLibraryService
 
         _disposed = true;
         _catalogCache.Clear();
+        foreach (var load in _catalogLoads.Values)
+        {
+            load.Cancel();
+            load.Dispose();
+        }
+
+        _catalogLoads.Clear();
         TryDeleteDirectory(_sessionCachePath);
+    }
+
+    private void CacheArtwork(string deviceIdentifier, IPhoneMusicTrack updatedTrack)
+    {
+        if (!_catalogCache.TryGetValue(deviceIdentifier, out var tracks))
+        {
+            return;
+        }
+
+        var updatedTracks = tracks.ToArray();
+        for (var index = 0; index < updatedTracks.Length; index++)
+        {
+            if (StringComparer.Ordinal.Equals(
+                updatedTracks[index].PersistentIdentifier,
+                updatedTrack.PersistentIdentifier))
+            {
+                updatedTracks[index] = updatedTrack;
+                _catalogCache.TryUpdate(deviceIdentifier, updatedTracks, tracks);
+                return;
+            }
+        }
     }
 
     private async Task<string> DownloadTrackAsync(
@@ -246,6 +317,48 @@ public sealed class AppleMusicLibraryService : IAppleMusicLibraryService
         var invalidCharacters = Path.GetInvalidFileNameChars();
         var sanitized = new string(value.Where(character => !invalidCharacters.Contains(character)).ToArray());
         return string.IsNullOrWhiteSpace(sanitized) ? Guid.NewGuid().ToString("N") : sanitized;
+    }
+
+    private sealed class CatalogLoad : IDisposable
+    {
+        private readonly CancellationTokenSource _cancellation;
+        private int _disposeRequested;
+
+        public CatalogLoad(
+            Task<IReadOnlyList<IPhoneMusicTrack>> task,
+            CancellationTokenSource cancellation)
+        {
+            Task = task;
+            _cancellation = cancellation;
+        }
+
+        public Task<IReadOnlyList<IPhoneMusicTrack>> Task
+        {
+            get;
+        }
+
+        public void Cancel() => _cancellation.Cancel();
+
+        public void Dispose()
+        {
+            if (Interlocked.Exchange(ref _disposeRequested, 1) != 0)
+            {
+                return;
+            }
+
+            if (Task.IsCompleted)
+            {
+                _cancellation.Dispose();
+                return;
+            }
+
+            _ = Task.ContinueWith(
+                static (_, state) => ((CancellationTokenSource)state!).Dispose(),
+                _cancellation,
+                CancellationToken.None,
+                TaskContinuationOptions.ExecuteSynchronously,
+                TaskScheduler.Default);
+        }
     }
 
     private static void TryDeleteDirectory(string path)

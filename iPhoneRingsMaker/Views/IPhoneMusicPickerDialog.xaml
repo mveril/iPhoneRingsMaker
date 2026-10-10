@@ -41,6 +41,7 @@
             x:Name="TrackList"
             Grid.Row="2"
             AutomationProperties.AutomationId="MusicLibraryTrackList"
+            ContainerContentChanging="OnTrackContainerContentChanging"
             ItemsSource="{x:Bind ViewModel.FilteredTracks, Mode=OneWay}"
             SelectedItem="{x:Bind ViewModel.SelectedTrack, Mode=TwoWay}"
             SelectionMode="Single">
@@ -54,7 +55,7 @@
                         </Grid.ColumnDefinitions>
                         <Grid Width="48" Height="48" VerticalAlignment="Center">
                             <FontIcon HorizontalAlignment="Center" VerticalAlignment="Center" Glyph="&#xE8D6;" />
-                            <Image Source="{x:Bind Artwork}" Stretch="UniformToFill" />
+                            <Image Source="{x:Bind Artwork, Mode=OneWay}" Stretch="UniformToFill" x:Phase="1" />
                         </Grid>
                         <StackPanel Grid.Column="1" Spacing="2">
                             <TextBlock Style="{ThemeResource BodyStrongTextBlockStyle}" Text="{x:Bind Title}" TextTrimming="CharacterEllipsis" />
